@@ -7,6 +7,7 @@ const tasksMiddleware = require("./middlewares/tasksMiddleware");
 
 router.get("/tasks", tasksController.getAll);
 router.post("/tasks",tasksMiddleware.validateBody, tasksController.createTask);
-router.post("/tasks/:id", tasksController.deleteTask);
+router.delete("/tasks/:id", tasksController.deleteTask);
+router.put("/tasks/:id",tasksMiddleware.validateBody, tasksController.deleteTask);
 
 module.exports = router;
