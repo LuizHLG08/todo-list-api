@@ -5,6 +5,12 @@ const getAll = async () => {
     return tasks;
 };
 
+const getTask = async (id) => {
+    const [task] = await connection.execute("SELECT * FROM tasks WHERE id = ?", [id]);
+
+    return task;
+};
+
 const createTask = async (task) => {
     const { title, content } = task;
 
@@ -12,9 +18,12 @@ const createTask = async (task) => {
 
     const query = "INSERT INTO tasks(title, content, created_at) VALUES( ?, ?, ?)";
 
-    const createdTask = await connection.execute(query, [title, content, dateUTC]);
+    const [result] = await connection.execute(query, [title, content, dateUTC]);
+
+    const [createdTask] = await connection.execute("SELECT * FROM tasks WHERE id = ?", [result.insertId])
 
     return createdTask;
+
 }
 
 const deleteTask = async (id) => {
@@ -28,7 +37,10 @@ const updateTask = async (id, task) => {
     const {title, content} = task
 
     const query = "UPDATE tasks SET title = ?, content = ? WHERE id = ?"
-    const updatedTask = await connection.execute(query, [title, content, id])
+
+    await connection.execute(query, [title, content, id])
+
+    const [updatedTask] = await connection.execute("SELECT * FROM tasks WHERE id = ?", [id])
 
     return updatedTask
 }
@@ -36,6 +48,7 @@ const updateTask = async (id, task) => {
 
 module.exports = {
     getAll,
+    getTask,
     createTask,
     deleteTask,
     updateTask,
