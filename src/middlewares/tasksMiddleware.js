@@ -15,6 +15,16 @@ const validateBody = (req, res, next) => {
     next()
 };
 
+const validateId = (req, res, next) => {
+   const id = parseInt(req.params.id)
+
+   if (isNaN(id) || id <= 0) {
+      return res.status(400).json({ message: 'Invalid id' });
+   }
+   next()
+}
+
 module.exports = {
     validateBody,
+    validateId,
 };
